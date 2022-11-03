@@ -29,6 +29,7 @@ services:
       - PG_PASSWORD=leonel
       - PG_HOST=pg
       - PG_PORT=5432
+      - PG_DATABASE=f1
     depends_on:
       - postgres
     tty: true

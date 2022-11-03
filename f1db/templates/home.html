@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block content %}
+<h1>Home</h1>
+
+
+<div class="list-group">
+
+    {% for key,item in queries.items() %}
+
+        <a href="{{ url_for('route_query', query_name=key) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ item.name }}</h5>
+            <!-- <small>3 days ago</small> -->
+          </div>
+          <p class="mb-1">{{ item.description }}.</p>
+           <small>{{sql_html_formatter(item.sql) | safe }}</small> 
+        </a>
+
+{% endfor %}
+</div>
+
+{% endblock content %}
