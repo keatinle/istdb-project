@@ -2,7 +2,7 @@ version: "3"
 
 services:
   postgres:
-    image: postgres:12.4
+    image: postgres
     container_name: pg
     restart: always
     volumes:
@@ -10,7 +10,7 @@ services:
     ports:
         - 5432:5432
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=f1
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=leonel 
     #environment:
