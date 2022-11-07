@@ -11,7 +11,7 @@ __all__ = ["drivers"]
 def create_tables(cur):
     commands = (
             '''
-                CREATE TABLE circuits (
+                CREATE TABLE IF NOT EXISTS circuits (
                     id INT PRIMARY KEY,
                     name TEXT,
                     country TEXT,
@@ -20,7 +20,7 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE races (
+                CREATE TABLE IF NOT EXISTS races (
                     id INT PRIMARY KEY,
                     name TEXT,
                     circuitId INT,
@@ -30,7 +30,7 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE drivers (
+                CREATE TABLE IF NOT EXISTS drivers (
                     id INT PRIMARY KEY,
                     forename TEXT,
                     surname TEXT,
@@ -39,14 +39,14 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE constructors (
+                CREATE TABLE IF NOT EXISTS constructors (
                     id INT PRIMARY KEY,
                     name TEXT,
                     nationality TEXT    
                 )
             ''',
             '''
-                CREATE TABLE results (
+                CREATE TABLE IF NOT EXISTS results (
                     id INT PRIMARY KEY,
                     raceId INT,
                     driverId INT,
@@ -59,12 +59,12 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE seasons (
+                CREATE TABLE IF NOT EXISTS seasons (
                     year INT PRIMARY KEY
                 )
             ''',
             '''
-                CREATE TABLE constructor_season (
+                CREATE TABLE IF NOT EXISTS constructor_season (
                     year INT NOT NULL,
                     constructorId INT NOT NULL,
                     position INT,
@@ -74,7 +74,7 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE driver_season (
+                CREATE TABLE IF NOT EXISTS driver_season (
                     year INT NOT NULL,
                     driverId INT NOT NULL,
                     position INT,
@@ -84,7 +84,7 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE driver_standings (
+                CREATE TABLE IF NOT EXISTS driver_standings (
                     raceId INT,
                     driverId INT,
                     position INT,
@@ -93,7 +93,7 @@ def create_tables(cur):
                 )
             ''',
             '''
-                CREATE TABLE constructor_standings (
+                CREATE TABLE IF NOT EXISTS constructor_standings (
                     raceId INT,
                     constructorId INT,
                     position INT,
