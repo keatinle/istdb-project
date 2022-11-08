@@ -13,8 +13,9 @@ try:
                                   host = os.environ.get("PG_HOST"),
                                   port = os.environ.get("PG_PORT"),
                                   database = os.environ.get("PG_DATABASE"))
+                                  #sslmode='allow')
     
-    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     print("Connected Successfully to PostgreSQL server!!")
     
     # Obtain a DB Cursor to perform database operations

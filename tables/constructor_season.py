@@ -31,7 +31,7 @@ def fill_table(cur):
             INNER JOIN races ON races.id = constructor_standings.raceId
             WHERE races.season = ''' + str(year) 
             + ''' GROUP BY constructorId
-            HAVING MAX(points)'''
+            HAVING MAX(points)''')
 
 
         # constructor_seasons = []

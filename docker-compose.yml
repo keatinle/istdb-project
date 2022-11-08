@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  postgres:
-    image: postgres
+  postgres: 
+    image: postgres:12.4
     container_name: pg
     restart: always
     volumes:
@@ -12,13 +12,18 @@ services:
     environment:
       - POSTGRES_DB=f1
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=leonel 
-    #environment:
-     # - POSTGRES_HOST_AUTH_METHOD=trust
-        #- POSTGRES_PASSWORD: hamilton
-       # - POSTGRES_DB: f1
-        #- POSTGRES_USER: leonel
+      - POSTGRES_PASSWORD=leonel
+      - POSTGRES_HOST_AUTH_METHOD=md5
+    networks:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "su", "-", "postgres", "pg_isready", "-d", "db_prod"]
+      interval: 1s
+      timeout: 6s
+      retries: 10
+      start_period: 1s
   python_app:
+    container_name: python_app
     build:
       context: .
       dockerfile: Dockerfile
@@ -31,6 +36,13 @@ services:
       - PG_PORT=5432
       - PG_DATABASE=f1
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    networks:
+      - db
     tty: true
+
+networks:
+    db:
+       driver: bridge
       
