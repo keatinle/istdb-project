@@ -99,7 +99,7 @@ def create_tables(cur):
             ''',
             '''
                 CREATE TABLE driver_standings (
-                    raceId INT,
+                    year INT,
                     driverId INT,
                     position INT,
                     points INT,
@@ -108,7 +108,7 @@ def create_tables(cur):
             ''',
             '''
                 CREATE TABLE constructor_standings (
-                    raceId INT,
+                    year INT,
                     constructorId INT,
                     position INT,
                     points INT,
@@ -123,10 +123,10 @@ def create_tables(cur):
 def fill_tables(cursor):
     circuits.fill_table(cursor)
     races.fill_table(cursor)
+    constructor_season.fill_table(cursor)
     drivers.fill_table(cursor)
     constructors.fill_table(cursor)
     results.fill_table(cursor)
-    constructor_season.fill_table(cursor)
     driver_season.fill_table(cursor)
 
 def create_all(conn):

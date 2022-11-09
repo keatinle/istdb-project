@@ -1,43 +1,21 @@
 import pandas as pd
 
-def fill_intermediate_cs_table(cur):
+def fill_table(cur):
     data = pd.read_csv(r'./data/constructor_standings.csv')
     df = pd.DataFrame(data)
 
-    constructor_standings = []
+    constructor_seasons = []
+    sql = '''
+        INSERT INTO constructor_standings(year, constructorId, position, points, wins)
+        VALUES (%s, %s, %s, %s, %s)
+        '''
 
     for row in df.itertuples():
-        cs = (row.raceId, row.constructorId, row.position, row.points, row.wins)
-        constructor_standings.append(cs)
+        cur.execute('''SELECT races.season FROM races where races.id = ''' + str(row.raceId))
+        year = cur.fetchone()[0]
 
-    sql = '''
-        INSERT INTO constructor_standings (raceId, constructorId, position, points, wins)
-        VALUES (%s, %s, %s, %s, %s)
-        '''
-    cur.executemany(sql, constructor_standings)
+        cs = (year, row.constructorId, row.position, row.points, row.wins)
+        constructor_seasons.append(cs)
 
-def fill_table(cur):
-    fill_intermediate_cs_table(cur)
+    cur.executemany(sql, constructor_seasons)
 
-    sql = '''
-        INSERT INTO constructor_season (constructorId, year, points, position, wins)
-        VALUES (%s, %s, %s, %s, %s)
-        '''
-
-    for year in range(1950, 2023):
-        cur.execute('''
-            SELECT constructorId, races.season, points, position, wins
-            FROM constructor_standings 
-            INNER JOIN races ON races.id = constructor_standings.raceId
-            WHERE races.season = ''' + str(year) 
-            + ''' GROUP BY constructorId
-            HAVING MAX(points)''')
-
-
-        # constructor_seasons = []
-
-        # for row in cur.fetchall():
-        #     print(row)
-        #     constructor_seasons.append(row)
-
-        # cur.executemany(sql, constructor_seasons)

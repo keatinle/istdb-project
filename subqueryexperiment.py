@@ -21,32 +21,13 @@ def main():
     cursor = con.cursor()
 
 
-    # cursor.execute('''
-    # SELECT cs.constructorId, races.season, cs.points
-    # FROM constructor_standings AS cs
-    # INNER JOIN races ON races.id = cs.raceId 
-    # WHERE races.season = 2022 
-    # GROUP BY cs.constructorId, races.season, cs.points
-    # HAVING constructorId, points IN  (
-        
-    #     SELECT constructorId, MAX(points) 
-    #                    FROM constructor_standings 
-    #                    INNER JOIN races ON races.id = constructor_standings.raceId
-    #                    WHERE races.season = 2022
-    #                    GROUP BY constructorId
-    #             )
-    # ORDER BY constructorId
-    # ''')
-
     cursor.execute('''
-    
-        SELECT constructorId, MAX(points) 
-            FROM constructor_standings 
-            INNER JOIN races ON races.id = constructor_standings.raceId
-            WHERE races.season = 2022
-            GROUP BY constructorId
+        SELECT cs.constructorId, cs.year, max(points)
+        FROM constructor_standings AS cs
+        GROUP BY cs.constructorId, cs.year 
+        ORDER BY max)
+        '''
 
-        ''')
 
     for row in cursor.fetchall():
         print(row)
