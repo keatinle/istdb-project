@@ -27,17 +27,46 @@ except (Exception, psycopg2.Error) as error :
 cursor = con.cursor()
 
 query_dict = {
-    "query1": {
-        'name':'Get all information about the customers',
-        'description':"a wonderful query", 
-        'sql':""" SELECT * FROM customer"""
+    "season_crashes_altitude": {
+        'name':'Seasons with the most Collisions over 500metres',
+        'description':"Returns an ordered list of seasons and the number of crashes that occurred at an altitude of over 500 metres", 
+        'sql': """SELECT races.season, count(*) FROM races 
+            INNER JOIN circuits on races.circuitId = circuits.id
+            INNER JOIN results ON results.raceId = races.id 
+            WHERE results.status = 'Collision' AND circuits.altitude >= 500
+            GROUP BY races.season
+            ORDER BY count DESC"""
     }, 
-    "query2": {
-        'name':'Get the customers name',
-        'description':"another wonderful query", 
-        'sql':""" SELECT name FROM customer """,
-    } 
+    "circuit_most_retirements": {
+        'name':'Circuits with most Retirements',
+        'description':"Returns an ordered list of circuits by the number of retirements at that circuit", 
+        'sql':""" SELECT circuits.name, COUNT(*) FROM circuits
+            INNER JOIN races ON races.circuitId = circuits.id
+            INNER JOIN results ON results.raceId = races.id
+            WHERE results.status = 'Retired'
+            GROUP BY circuits.name
+            HAVING COUNT(*) > 1
+            ORDER BY count DESC; """,
+    },
+    "driver_birthday_dnf": {
+        'name':"Drivers who did not finish on their birthday",
+        'description': "",
+        'sql': """ SELECT drivers.forename, drivers.surname FROM drivers
+            INNER JOIN results ON results.driverId = drivers.id
+            INNER JOIN races ON races.id = results.raceId
+            WHERE results.position = '1' 
+            AND MONTH(CAST(drivers.dob) as date) = MONTH(CAST(races.date) as date)
+            AND DAY(CAST(drivers.dob) as date) = DAY(CAST(races.date) as date) """
+    },
+    "driver_country_res":{
+        'name':""
+        'dewscription':
+        'sql':"""SELECT drivers.nationality, SUM(drivers_standings.points) FROM drivers
+                INNER JOIN driver_standings ON driver_standings.driverId = drivers.id
+                GROUP BY nationality         
+        """
 
+    }
 }
 
 
@@ -58,8 +87,8 @@ def route_query(query_name):
     try:
         cursor.execute(query_dict[query_name]['sql'], (0,))
         rows = cursor.fetchall() 
-        for row in rows:
-         print(row)
+        # for row in rows:
+        #  print(row)
     except(Exception, psycopg2.Error) as error :
         con.rollback()
         print("Error:", error)

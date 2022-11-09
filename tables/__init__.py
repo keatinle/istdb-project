@@ -40,7 +40,7 @@ def create_tables(cur):
                     circuitId INT,
                     season INT,
                     round INT,
-                    date TEXT
+                    date DATE
                 )
             ''',
             '''
@@ -48,7 +48,7 @@ def create_tables(cur):
                     id INT PRIMARY KEY,
                     forename TEXT,
                     surname TEXT,
-                    dob TEXT,
+                    dob DATE,
                     nationality TEXT
                 )
             ''',
