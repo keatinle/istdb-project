@@ -39,7 +39,7 @@ query_dict = {
     }, 
     "circuit_most_retirements": {
         'name':'Circuits with most Retirements',
-        'description':"Returns an ordered list of circuits by the number of retirements at that circuit", 
+        'description':"Returns an ordered list of circuits by the number of retirements that are bigger than one at that circuit", 
         'sql':""" SELECT circuits.name, COUNT(*) FROM circuits
             INNER JOIN races ON races.circuitId = circuits.id
             INNER JOIN results ON results.raceId = races.id
@@ -50,17 +50,17 @@ query_dict = {
     },
     "driver_birthday_dnf": {
         'name':"Drivers who did not finish on their birthday",
-        'description': "",
-        'sql': """ SELECT drivers.forename, drivers.surname FROM drivers
+        'description': " Returns the full name of drivers that did not finish a race on their birthday",
+        'sql': """SELECT drivers.forename, drivers.surname FROM drivers
             INNER JOIN results ON results.driverId = drivers.id
             INNER JOIN races ON races.id = results.raceId
-            WHERE results.position = '1' 
-            AND MONTH(CAST(drivers.dob) as date) = MONTH(CAST(races.date) as date)
-            AND DAY(CAST(drivers.dob) as date) = DAY(CAST(races.date) as date) """
-    },
+            WHERE results.position IS NULL 
+            AND EXTRACT(MONTH FROM drivers.dob) = EXTRACT(MONTH FROM races.date)
+            AND EXTRACT(DAY FROM drivers.dob) = EXTRACT(DAY FROM races.date) """
+    }, # WHERE results.position = '1' 
     "driver_country_res":{
-        'name':""
-        'dewscription':
+        'name':"",
+        'dewscription': "",
         'sql':"""SELECT drivers.nationality, SUM(drivers_standings.points) FROM drivers
                 INNER JOIN driver_standings ON driver_standings.driverId = drivers.id
                 GROUP BY nationality         
@@ -69,8 +69,6 @@ query_dict = {
     }
 }
 
-
-#sql_select_query = """ SELECT * FROM customer"""
 
 
 app = Flask(__name__)
@@ -87,12 +85,12 @@ def route_query(query_name):
     try:
         cursor.execute(query_dict[query_name]['sql'], (0,))
         rows = cursor.fetchall() 
-        # for row in rows:
-        #  print(row)
+
     except(Exception, psycopg2.Error) as error :
         con.rollback()
         print("Error:", error)
         abort(500)
+
     table_head = cursor.description
     title = query_dict[query_name]['name']
     sql = query_dict[query_name]['sql']
