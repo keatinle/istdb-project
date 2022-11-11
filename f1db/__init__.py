@@ -58,6 +58,24 @@ query_dict = {
             AND EXTRACT(MONTH FROM drivers.dob) = EXTRACT(MONTH FROM races.date)
             AND EXTRACT(DAY FROM drivers.dob) = EXTRACT(DAY FROM races.date) """
     }, # WHERE results.position = '1' 
+    "driver_last_first":{
+        'name':"Which drivers have gone from the back of the grid to first place in the same race",
+        'dewscription': "Returns the name(s) of driver that managed to win from the end of the grid, including their starting position",
+        'sql':"""SELECT drivers.forename, drivers.surname, results.grid FROM drivers
+                INNER JOIN results ON results.driverId = drivers.id
+                WHERE results.grid >= '20'
+                AND results.position = '1';         
+        """
+    }, #( SELECT MAX(results.grid) FROM results GROUP BY results.raceID )
+    "test":{
+        'name':"test test test ",
+        'dewscription': "",
+        'sql':"""SELECT MAX(results.grid), results.raceID, races.season FROM results 
+        INNER JOIN races ON races.id = results.raceID
+        GROUP BY results.raceID, races.season
+        ORDER BY results.raceID DESC;         
+        """
+    },
     "driver_country_res":{
         'name':"",
         'dewscription': "",
