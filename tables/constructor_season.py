@@ -19,12 +19,12 @@ def fill_table(cur):
         q = """SELECT races.year, constructorId, position, MAX(points) as max, wins 
             FROM df
             INNER JOIN races ON races.raceid = df.raceId 
-            WHERE races.year = """ + str(num) + " GROUP BY constructorId"
+            WHERE races.year = """ + str(num) + " GROUP BY constructorId ORDER BY max DESC, wins DESC"
 
         fixed_df = sqldf(q, locals())
 
-        for row in fixed_df.itertuples():
-            cs = (row.year, row.constructorId, row.position, row.max, row.wins)
+        for row in fixed_df.itertuples(index=True):
+            cs = (row.year, row.constructorId, row.Index + 1, row.max, row.wins)
             constructor_seasons.append(cs)
 
     cur.executemany(sql, constructor_seasons)

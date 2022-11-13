@@ -105,19 +105,35 @@ query_dict = {
 			GROUP BY nationality;     
 		"""
 	},
-	"driver_zero_teammate_win": {
-		"name": "Did any driver ever score 0 points the same year their teammate won the Driver's Championship",
-		"description": "",
-		"sql": """
-			SELECT drivers.forename, drivers.surname, driver_standings.year, constructors.name 
-			FROM drivers
-			INNER JOIN driver_standings ON driver_standings.driverId = drivers.id 
-			INNER JOIN results ON drivers.id = results.driverId
-			INNER JOIN constructor_standings ON constructor_standings.constructorId = results.constructorId
-			INNER JOIN constructors ON constructors.id = results.constructorId
-			WHERE driver_standings.position = 1 AND driver_standings.points = constructor_standings.points
-			GROUP BY drivers.forename, drivers.surname, driver_standings.year, constructors.name;
-		"""
+	# "driver_zero_teammate_win": {
+	# 	"name": "Did any driver ever score 0 points the same year their teammate won the Driver's Championship",
+	# 	"description": "",
+	# 	"sql": """
+			
+	# 		SELECT forename, surname, zeros.year FROM
+	# 		(
+	# 			SELECT drivers.forename, drivers.surname, driver_standings.year, results.constructorId
+	# 			FROM drivers 
+	# 			INNER JOIN results ON results.driverId = drivers.id
+	# 			INNER JOIN driver_standings ON driver_standings.driverId = drivers.id
+	# 			WHERE driver_standings.points = 0
+	# 		) zeros 
+	# 		INNER JOIN
+	# 		( 
+	# 			SELECT DISTINCT ds.driverId, ds.year, results.constructorId
+	# 			FROM driver_standings AS ds
+	# 			INNER JOIN results ON results.driverId = ds.driverId
+	# 			INNER JOIN races 
+	# 			ON races.season = ds.year
+	# 			AND results.raceId = races.id
+	# 			WHERE ds.position = 1
+	# 		) AS winners
+	# 			ON winners.constructorId = zeros.constructorId
+	# 			AND winners.year = zeros.year;
+			
+
+	# 	"""
+
 	}
 }
 

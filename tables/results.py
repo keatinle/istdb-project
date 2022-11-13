@@ -25,6 +25,7 @@ def fill_table(cur):
                 row.points,
                 fastestLap,
                 statusdict[row.statusId])
+
         results.append(result)
 
     sql = '''
