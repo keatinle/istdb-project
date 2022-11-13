@@ -1,17 +1,5 @@
 
-- Clean data
-    - Create database problem
-    - Check if table exists
-    - Check if data exists
-    - drop tables beforehand?
-
+- Fix driver_season and constructor_season
 - Queries
-
-- Write the report
-    - Introduction
-    - Data prep 
-    - Schema
-    - Queries
-    - ...
-
+- Report
 - Presentation

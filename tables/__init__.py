@@ -122,12 +122,26 @@ def create_tables(cur):
 
 def fill_tables(cursor):
     circuits.fill_table(cursor)
+    print("Circuits complete")
+
     races.fill_table(cursor)
-    constructor_season.fill_table(cursor)
+    print("Races complete")
+
     drivers.fill_table(cursor)
+    print("Drivers complete")
+
     constructors.fill_table(cursor)
+    print("Constructors complete")
+
     results.fill_table(cursor)
+    print("Results complete")
+    
     driver_season.fill_table(cursor)
+    print("Driver seasons complete")
+    
+    constructor_season.fill_table(cursor)
+    print("Constructor seasons complete")
+    
 
 def create_all(conn):
     cursor = conn.cursor()

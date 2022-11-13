@@ -1,8 +1,12 @@
 import pandas as pd
+from pandasql import sqldf
 
 def fill_table(cur):
     data = pd.read_csv(r'./data/constructor_standings.csv')
     df = pd.DataFrame(data)
+    
+    data = pd.read_csv(r'./data/races.csv')
+    races = pd.DataFrame(data)
 
     constructor_seasons = []
     sql = '''
@@ -10,12 +14,17 @@ def fill_table(cur):
         VALUES (%s, %s, %s, %s, %s)
         '''
 
-    for row in df.itertuples():
-        cur.execute('''SELECT races.season FROM races where races.id = ''' + str(row.raceId))
-        year = cur.fetchone()[0]
+    for num in range(1950, 2023):
 
-        cs = (year, row.constructorId, row.position, row.points, row.wins)
-        constructor_seasons.append(cs)
+        q = """SELECT races.year, constructorId, position, MAX(points) as max, wins 
+            FROM df
+            INNER JOIN races ON races.raceid = df.raceId 
+            WHERE races.year = """ + str(num) + " GROUP BY constructorId"
+
+        fixed_df = sqldf(q, locals())
+
+        for row in fixed_df.itertuples():
+            cs = (row.year, row.constructorId, row.position, row.max, row.wins)
+            constructor_seasons.append(cs)
 
     cur.executemany(sql, constructor_seasons)
-
