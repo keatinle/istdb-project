@@ -105,34 +105,39 @@ query_dict = {
 			GROUP BY nationality;     
 		"""
 	},
-	# "driver_zero_teammate_win": {
-	# 	"name": "Did any driver ever score 0 points the same year their teammate won the Driver's Championship",
-	# 	"description": "",
-	# 	"sql": """
-			
-	# 		SELECT forename, surname, zeros.year FROM
-	# 		(
-	# 			SELECT drivers.forename, drivers.surname, driver_standings.year, results.constructorId
-	# 			FROM drivers 
-	# 			INNER JOIN results ON results.driverId = drivers.id
-	# 			INNER JOIN driver_standings ON driver_standings.driverId = drivers.id
-	# 			WHERE driver_standings.points = 0
-	# 		) zeros 
-	# 		INNER JOIN
-	# 		( 
-	# 			SELECT DISTINCT ds.driverId, ds.year, results.constructorId
-	# 			FROM driver_standings AS ds
-	# 			INNER JOIN results ON results.driverId = ds.driverId
-	# 			INNER JOIN races 
-	# 			ON races.season = ds.year
-	# 			AND results.raceId = races.id
-	# 			WHERE ds.position = 1
-	# 		) AS winners
-	# 			ON winners.constructorId = zeros.constructorId
-	# 			AND winners.year = zeros.year;
-			
-
-	# 	"""
+	"driver_zero_teammate_win": {
+		"name": "Did any driver ever score 0 points the same year a driver with the same constructor won the Driver's Championship",
+		"description": "Joins drivers who scored zero points with drivers" 
+		+ " who scored all the points for a constructor that year."
+		+ " N.B. in older seasons, the constructor was the engine-maker not the team",
+		"sql": """
+			SELECT DISTINCT zeros.forename, zeros.surname, zeros.year
+			FROM
+			(
+				SELECT d.forename, d.surname, r.constructorId, ds.year 
+				FROM drivers AS d
+				INNER JOIN driver_standings as ds
+					ON d.id = ds.driverId
+				INNER JOIN results as r
+					ON r.driverID = d.id
+				WHERE ds.points = 0
+			) as zeros
+			INNER JOIN
+			(
+				SELECT DISTINCT cs.constructorId, cs.year
+				FROM constructor_standings as cs
+				INNER JOIN results as r
+					ON r.constructorId = cs.constructorId
+				INNER JOIN driver_standings as ds
+					ON ds.year = cs.year 
+					AND ds.driverId = r.driverId
+					AND ds.points = cs.points
+				WHERE ds.position = 1 AND r.constructorId = cs.constructorId
+			) AS winners
+				ON zeros.constructorId = winners.constructorId
+				AND zeros.year = winners.year
+			ORDER BY YEAR;
+			""" 
 
 	}
 }
