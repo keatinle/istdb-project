@@ -102,7 +102,8 @@ query_dict = {
 		"sql": """
 			SELECT drivers.nationality, SUM(driver_standings.points) FROM drivers
 			INNER JOIN driver_standings ON driver_standings.driverId = drivers.id
-			GROUP BY nationality;     
+			GROUP BY nationality
+			ORDER BY SUM DESC;     
 		"""
 	},
 	"driver_zero_teammate_win": {
