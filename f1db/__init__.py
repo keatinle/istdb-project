@@ -98,7 +98,7 @@ query_dict = {
 	}, #( SELECT MAX(results.grid) FROM results GROUP BY results.raceID )
 	"driver_country_res": {
 		"name": "Most points by driver nationality",
-		"description": "",
+		"description": "Returns evrey nationality with their total amount of points",
 		"sql": """
 			SELECT drivers.nationality, SUM(driver_standings.points) FROM drivers
 			INNER JOIN driver_standings ON driver_standings.driverId = drivers.id
